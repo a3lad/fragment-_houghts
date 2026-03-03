@@ -35,20 +35,6 @@ function drawStore() {
     }
   }
 
-  function drawStoreBackground() {
-    let levelName = levels[currentLevel].name;
-
-    if (levelName === "Cafe") {
-      drawCafeScene();
-    } else if (levelName === "Retail") {
-      drawRetailScene();
-    } else if (levelName === "Bookstore") {
-      drawBookstoreScene();
-    } else if (levelName === "Grocery") {
-      drawGroceryScene();
-    }
-  }
-
   drawCafeBackground();
 
   fill(0);
