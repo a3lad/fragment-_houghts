@@ -5,14 +5,52 @@ let intrusiveSystem;
 
 function startStoreLevel() {
   let sentence = levels[currentLevel].sentence.split(" ");
-  words = shuffle([...sentence]);
+
+  words = shuffle([...sentence], true);
   arranged = [];
+
   timer = levels[currentLevel].timeLimit;
+
   intrusiveSystem = new IntrusiveSystem(levels[currentLevel].intrusiveRate);
 }
 
 function drawStore() {
-  background("#fff4dc");
+  drawStoreBackground();
+  // TIMER COUNTDOWN
+  if (frameCount % 60 === 0 && timer > 0) {
+    timer--;
+  }
+
+  if (timer <= 0) {
+    gameState = "fail";
+  }
+
+  // CHECK WIN
+  if (words.length === 0 && timer > 0) {
+    gameState = "world";
+    currentLevel++;
+
+    if (currentLevel >= levels.length) {
+      gameState = "success";
+    }
+  }
+
+  function drawStoreBackground() {
+    let levelName = levels[currentLevel].name;
+
+    if (levelName === "Cafe") {
+      drawCafeScene();
+    } else if (levelName === "Retail") {
+      drawRetailScene();
+    } else if (levelName === "Bookstore") {
+      drawBookstoreScene();
+    } else if (levelName === "Grocery") {
+      drawGroceryScene();
+    }
+  }
+
+  drawCafeBackground();
+
   fill(0);
   textSize(16);
   text("Time: " + timer, 20, 20);
@@ -36,6 +74,110 @@ function drawStore() {
   intrusiveSystem.display();
 }
 
+function drawCafeBackground() {
+  // Wall
+  background("#ffe8d6");
+
+  // Floor
+  fill("#e0c097");
+  rect(0, height - 150, width, 150);
+
+  // Counter
+  fill("#8d6e63");
+  rect(0, height - 220, width, 70);
+
+  // Menu Board
+  fill("#3e2723");
+  rect(width / 2 - 150, 40, 300, 120);
+
+  fill("#ffffff");
+  textAlign(CENTER);
+  textSize(14);
+  text("MENU", width / 2, 70);
+  text("Latte", width / 2, 95);
+  text("Cappuccino", width / 2, 115);
+  text("Tea", width / 2, 135);
+
+  // Coffee Cup on Counter
+  drawCoffeeCup(width / 2, height - 250);
+
+  // Ceiling Lights
+  drawLights();
+}
+
+function drawCoffeeCup(x, y) {
+  push();
+  translate(x, y);
+
+  // Cup body
+  fill("#ffffff");
+  rect(-15, -20, 30, 30, 5);
+
+  // Handle
+  noFill();
+  stroke("#ffffff");
+  strokeWeight(4);
+  arc(18, -5, 20, 20, -PI / 2, PI / 2);
+
+  // Coffee
+  noStroke();
+  fill("#6f4e37");
+  rect(-12, -18, 24, 8);
+
+  pop();
+}
+
+function drawLights() {
+  for (let i = 100; i < width; i += 200) {
+    fill("#fff8dc");
+    ellipse(i, 20, 30, 30);
+
+    // light glow
+    fill(255, 255, 200, 100);
+    ellipse(i, 20, 60, 60);
+  }
+}
+
+function drawCafeScene() {
+  background("#ffe8d6"); // warm wall
+
+  fill("#e0c097"); // floor
+  rect(0, height - 150, width, 150);
+
+  fill("#8d6e63"); // counter
+  rect(0, height - 220, width, 70);
+}
+function drawRetailScene() {
+  background("#fce4ec"); // soft pink wall
+
+  fill("#e0e0e0"); // floor
+  rect(0, height - 150, width, 150);
+
+  fill("#d4af37"); // shelves
+  rect(50, 100, 200, 200);
+  rect(width - 250, 100, 200, 200);
+}
+
+function drawBookstoreScene() {
+  background("#e6f2ff"); // light blue wall
+
+  fill("#c2a878"); // wooden floor
+  rect(0, height - 150, width, 150);
+
+  fill("#5d4037"); // bookshelf
+  rect(80, 80, 200, 300);
+  rect(width - 280, 80, 200, 300);
+}
+function drawGroceryScene() {
+  background("#e8f5e9"); // light green wall
+
+  fill("#c8e6c9"); // floor
+  rect(0, height - 150, width, 150);
+
+  fill("#90caf9"); // fridge section
+  rect(60, 100, 220, 280);
+  rect(width - 280, 100, 220, 280);
+}
 function mousePressed() {
   if (gameState === "store") {
     for (let i = 0; i < words.length; i++) {

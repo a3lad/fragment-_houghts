@@ -3,6 +3,7 @@ let player;
 function setup() {
   createCanvas(800, 600);
   player = new Player();
+  textFont("Patrick Hand"); // 👈 ADD THIS
 }
 
 function draw() {
@@ -17,6 +18,10 @@ function draw() {
     checkBuildingEntry(player);
   } else if (gameState === "store") {
     drawStore();
+  } else if (gameState === "fail") {
+    drawFailScreen();
+  } else if (gameState === "success") {
+    drawSuccessScreen();
   }
 }
 
@@ -38,6 +43,16 @@ function keyPressed() {
       selectedCharacter = "unisex";
       player.setCharacter("unisex");
       gameState = "world";
+
+      if (gameState === "fail" && key === " ") {
+        gameState = "characterSelect";
+        currentLevel = 0;
+      }
+
+      if (gameState === "success" && key === " ") {
+        gameState = "start";
+        currentLevel = 0;
+      }
     }
   }
 }
