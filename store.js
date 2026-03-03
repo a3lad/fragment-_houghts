@@ -138,46 +138,6 @@ function drawLights() {
   }
 }
 
-function drawCafeScene() {
-  background("#ffe8d6"); // warm wall
-
-  fill("#e0c097"); // floor
-  rect(0, height - 150, width, 150);
-
-  fill("#8d6e63"); // counter
-  rect(0, height - 220, width, 70);
-}
-function drawRetailScene() {
-  background("#fce4ec"); // soft pink wall
-
-  fill("#e0e0e0"); // floor
-  rect(0, height - 150, width, 150);
-
-  fill("#d4af37"); // shelves
-  rect(50, 100, 200, 200);
-  rect(width - 250, 100, 200, 200);
-}
-
-function drawBookstoreScene() {
-  background("#e6f2ff"); // light blue wall
-
-  fill("#c2a878"); // wooden floor
-  rect(0, height - 150, width, 150);
-
-  fill("#5d4037"); // bookshelf
-  rect(80, 80, 200, 300);
-  rect(width - 280, 80, 200, 300);
-}
-function drawGroceryScene() {
-  background("#e8f5e9"); // light green wall
-
-  fill("#c8e6c9"); // floor
-  rect(0, height - 150, width, 150);
-
-  fill("#90caf9"); // fridge section
-  rect(60, 100, 220, 280);
-  rect(width - 280, 100, 220, 280);
-}
 function mousePressed() {
   if (gameState === "store") {
     for (let i = 0; i < words.length; i++) {
