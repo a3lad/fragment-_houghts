@@ -1,9 +1,31 @@
 let player;
+let levelBackgrounds = [];
+let worldimg;
+let startimg;
+let characterimg;
+let tryagainimg;
+let playerImages = [];
+let showInstructions = true;
 
 function setup() {
   createCanvas(800, 600);
   player = new Player();
-  textFont("Patrick Hand"); // 👈 ADD THIS
+  textFont("Patrick Hand");
+}
+
+function preload() {
+  // Load level-specific backgrounds
+  for (let lvl of levels) {
+    levelBackgrounds.push(loadImage(lvl.bgImg));
+  }
+  worldimg = loadImage("assets/worldBackground.png");
+  startimg = loadImage("assets/introImage.png");
+  characterimg = loadImage("assets/characterBackground.png");
+
+  playerImages[0] = loadImage("assets/player1.png");
+  playerImages[1] = loadImage("assets/player2.png");
+  playerImages[2] = loadImage("assets/player3.png");
+  tryagainimg = loadImage("assets/tryagainScreen.png");
 }
 
 function draw() {
@@ -16,19 +38,38 @@ function draw() {
     player.move();
     player.display();
     checkBuildingEntry(player);
+    fill(0);
+    textSize(16);
+    textAlign(LEFT, TOP);
+    text(`X: ${Math.floor(player.x)}  Y: ${Math.floor(player.y)}`, 10, 10);
+    checkBuildingEntry(player);
+
+    // Show Press ENTER if near building
+    if (player.nearBuilding) {
+      fill(0);
+      textAlign(CENTER);
+      textSize(18);
+      text("Press ENTER", width / 2, height - 40);
+    }
+
+    if (showInstructions) {
+      drawInstructionsPopup();
+    }
   } else if (gameState === "store") {
     drawStore();
   } else if (gameState === "fail") {
     drawFailScreen();
-  } else if (gameState === "success") {
-    drawSuccessScreen();
   }
 }
 
 function keyPressed() {
+  // Start game
   if (gameState === "start" && key === " ") {
     gameState = "characterSelect";
-  } else if (gameState === "characterSelect") {
+  }
+
+  // Character selection
+  else if (gameState === "characterSelect") {
     if (key === "1") {
       selectedCharacter = "boy";
       player.setCharacter("boy");
@@ -43,16 +84,25 @@ function keyPressed() {
       selectedCharacter = "unisex";
       player.setCharacter("unisex");
       gameState = "world";
+    }
+  }
 
-      if (gameState === "fail" && key === " ") {
-        gameState = "characterSelect";
-        currentLevel = 0;
-      }
+  // Enter to go into building
+  else if (gameState === "world") {
+    if (keyCode === ENTER && player.nearBuilding) {
+      currentLevel = buildings.indexOf(player.nearBuilding);
+      startStoreLevel();
+      gameState = "store";
+    }
+  }
 
-      if (gameState === "success" && key === " ") {
-        gameState = "start";
-        currentLevel = 0;
-      }
+  // Fail screen retry
+  else if (gameState === "fail") {
+    if (key === " ") {
+      startStoreLevel();
+      gameState = "store";
+    } else if (keyCode === ENTER) {
+      gameState = "world";
     }
   }
 }
